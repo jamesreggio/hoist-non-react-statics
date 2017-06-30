@@ -15,6 +15,7 @@ var REACT_STATICS = {
     type: true
 };
 
+var getOwnPropertyNames = Object.getOwnPropertyNames
 var getOwnPropertySymbols = Object.getOwnPropertySymbols;
 var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 var defineProperty = Object.defineProperty;
@@ -40,21 +41,20 @@ module.exports = function hoistNonReactStatics(targetComponent, sourceComponent,
             }
         }
 
-        for (var key in sourceComponent) {
-            if (!REACT_STATICS[key] && (!blacklist || !blacklist[key])) {
-                if (hasOwnProperty.call(sourceComponent, key)) {
-                    copyProperty(targetComponent, sourceComponent, key);
-                }
+        var names = getOwnPropertyNames(sourceComponent);
+        for (var i = 0; i < names.length; i++) {
+            var name = names[i];
+            if (!REACT_STATICS[name] && (!blacklist || !blacklist[name])) {
+                copyProperty(targetComponent, sourceComponent, name);
             }
         }
 
         if (getOwnPropertySymbols) {
             var symbols = getOwnPropertySymbols(sourceComponent);
-            for (var i = 0; i < symbols.length; i++) {
-                if (!REACT_STATICS[symbols[i]] && (!blacklist || !blacklist[symbols[i]])) {
-                    if (propIsEnumerable.call(sourceComponent, symbols[i])) {
-                        copyProperty(targetComponent, sourceComponent, symbols[i]);
-                    }
+            for (i = 0; i < symbols.length; i++) {
+                var symbol = symbols[i];
+                if (!REACT_STATICS[symbol] && (!blacklist || !blacklist[symbol])) {
+                    copyProperty(targetComponent, sourceComponent, symbol);
                 }
             }
         }
