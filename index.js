@@ -27,7 +27,8 @@ var objectPrototype = getPrototypeOf && getPrototypeOf(Object);
 function copyProperty(targetComponent, sourceComponent, key) {
     try { // Avoid failures from read-only properties
         var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
-        if (descriptor.writable !== false && descriptor.configurable !== false) {
+        var targetDescriptor = getOwnPropertyDescriptor(targetComponent, key);
+        if (descriptor.writable !== false && (!targetDescriptor || targetDescriptor.configurable !== false)) {
             defineProperty(targetComponent, key, descriptor);
         }
     } catch (e) {}
